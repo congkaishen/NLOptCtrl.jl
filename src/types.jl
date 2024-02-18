@@ -15,8 +15,7 @@ _Ipopt_defaults = (
     "warm_start_init_point" => "yes",
     "fixed_variable_treatment" => "relax_bounds",
     "max_cpu_time" => 0.1,
-    "print_level" => 0,
-    "warm_start_init_point" => "yes"
+    "print_level" => 0
     )
 
 
