@@ -210,7 +210,6 @@ function OCPoptimize!(n::NLOpt)
         n.r.ocp.evalNum = n.r.ocp.evalNum + 1
         postProcess!(n)      # temporarily save data
     end
-    WarmStart(n)
     return nothing
 end
 
@@ -337,7 +336,7 @@ function WarmStart(n::NLOpt)
     flag = false
   end
   if flag == true
-    set_start_value.(n.r.ocp.x, n.r.ocp.X)
+    set_start_value.(n.r.ocp.x, [n.r.ocp.X0; n.r.ocp.X[2:end, :]])
     set_start_value.(n.r.ocp.u, n.r.ocp.U)
   end
 
@@ -367,4 +366,5 @@ function ShiftInitStates(n::NLOpt, X0)
       # JuMP.set_normalized_rhs(n.r.ocp.x0Con[st], n.ocp.X0[st])
       fix(n.r.ocp.x[1, st], n.ocp.X0[st]; force = true)
   end
+  WarmStart(n)
 end
