@@ -39,6 +39,7 @@ export polyDiff
 export linearSpline
 
 include("types.jl")
+export NLOptRealization
 
 include("utils.jl")
 export intervals
