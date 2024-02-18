@@ -57,6 +57,7 @@ export opt2dfs!
 export dvs2dfs
 export WarmStart
 export RetrieveSolveStatus
+export ShiftInitStates
 
 include("setup.jl")
 export define

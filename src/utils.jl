@@ -359,3 +359,11 @@ function RetrieveSolveStatus(n::NLOpt)
       return SolvingStatus[3]
   end
 end
+
+function ShiftInitStates(n::NLOpt, X0)
+  n.ocp.X0 = X0
+  push!(n.r.ocp.X0, n.ocp.X0)    # NOTE this may be for saving data
+  for st in 1:n.ocp.state.num
+      JuMP.set_normalized_rhs(n.r.ocp.x0Con[st], n.ocp.X0[st])
+  end
+end
