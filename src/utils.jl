@@ -337,7 +337,7 @@ function WarmStart(n::NLOpt)
   end
   if flag == true
     set_start_value.(n.r.ocp.x, [n.ocp.X0'; n.r.ocp.X[2:end, :]])
-    set_start_value.(n.r.ocp.u, [n.r.ocp.U[2:end, :]; n.r.ocp.U[end, :]];)
+    set_start_value.(n.r.ocp.u, [n.r.ocp.U[2:end, :]; n.r.ocp.U[end, :]'])
   end
 
 end
