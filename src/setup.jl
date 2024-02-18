@@ -116,8 +116,8 @@ function OCPdef!(n::NLOpt{T}) where { T <: Number }
 
     for st in 1:n.ocp.state.num
         if !isnan(n.ocp.X0[st]) # could have a bool for this
-            # n.r.ocp.x0Con = [ n.r.ocp.x0Con ; @constraint(n.ocp.mdl, x[1,st] == n.ocp.X0[st]) ]
-            fix(x[1, st], n.ocp.X0[st]; force = true)
+            n.r.ocp.x0Con = [ n.r.ocp.x0Con ; @constraint(n.ocp.mdl, x[1,st] == n.ocp.X0[st]) ]
+            # fix(x[1, st], n.ocp.X0[st]; force = true)
         end
         if !isnan(n.ocp.XF[st])
             n.r.ocp.xfCon = [n.r.ocp.xfCon ; @constraint(n.ocp.mdl, x[end,st] == n.ocp.XF[st]) ]
