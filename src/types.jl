@@ -1,25 +1,4 @@
-#using JuMP
-#using DataFrames
-#using Parameters
-#using Ipopt
-#using LinearAlgebra
-#using FastGaussQuadrature
-# These functions are required for NLOptMPC.jl and PrettyPlots.jl (resultsDir!)
-# export  State,
-#         Control,
-#         Constraint,
-#         Results,
-#         Settings,
-#         _Ipopt_defaults,
-#         _Ipopt_MPC,
-#         simulationModes,
-#         MPC
 
-# IPOPT Settings
-# :print_level      : Print level
-# :constr_viol_tol  : Absolute tolerance on the constraint violation.
-# :max_iter         : Maximum number of iterations.
-# :max_cpu_time     : A limit on CPU seconds that Ipopt can use to solve one problem
 
 _Ipopt_defaults = (
     "mu_strategy" => "adaptive",
