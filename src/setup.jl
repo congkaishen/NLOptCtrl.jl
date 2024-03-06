@@ -188,16 +188,19 @@ function OCPdef!(n::NLOpt{T}) where { T <: Number }
           end
         elseif n.s.ocp.integrationScheme == :Midpoint  
             xmd = @variable(n.ocp.mdl,xmid[1:n.ocp.state.pts,1:n.ocp.state.num])
-            dxmid = Array{Any}(undef,L,n.ocp.N)
-            # for st in 1:n.ocp.state.num
-            #     dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,L,st)
-            # end
-
-            for st in n.ocp.state.num
-                @constraint(n.ocp.mdl, [j in 1:n.ocp.N], xmd[j, st] - n.r.ocp.x[j, st] == dx[j, st] * n.ocp.tf/(n.ocp.N * 2))
+            dxmid = Array{Any}(undef,L,n.ocp.state.num)
+            for st in 1:n.ocp.state.num
                 dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,L,st)
-                n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j + 1, st] - n.r.ocp.x[j, st] == dxmid[j, st] *  n.ocp.tf/(n.ocp.N))
             end
+            for j in n.ocp.N 
+                @constraint(OCPForm.mdl, [st=1:ocp.s.states.num], n.r.ocp.x[j + 1, st] - n.r.ocp.x[j, st] == dxmid[j, st] * n.ocp.tf / n.ocp.N)
+                n.r.ocp.dynCon[j,:] = @constraint(OCPForm.mdl, [st=1:ocp.s.states.num], xmd[j, st] - n.r.ocp.x[j, st] == dx[j, st] / 2 * n.ocp.tf / n.ocp.N)
+            end
+            # for st in n.ocp.state.num
+            #     @constraint(n.ocp.mdl, [j in 1:n.ocp.N], xmd[j, st] - n.r.ocp.x[j, st] == dx[j, st] * n.ocp.tf/(n.ocp.N * 2))
+            #     dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,L,st)
+            #     n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j + 1, st] - n.r.ocp.x[j, st] == dxmid[j, st] *  n.ocp.tf/(n.ocp.N))
+            # end
         else
             error("Not implemented yet")
         end

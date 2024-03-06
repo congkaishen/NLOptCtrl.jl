@@ -1,4 +1,4 @@
-using NLOptCtrl
+using .NLOptCtrl
 using Test
 
 @testset "NLOptCtrl.jl" begin
@@ -20,11 +20,11 @@ using Test
     controls!(n,[:jx,:sr];descriptions=["jx(t)","sr(t)"]);
     dx=ThreeDOFBicycle_expr(n);
     dynamics!(n,dx);
-    # configure!(n,N=60;(:integrationScheme=>:bkwEuler),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
+    configure!(n,N=60;(:integrationScheme=>:Midpoint),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
     # configure!(n,N=60;(:integrationScheme=>:bkwEuler),(:finalTimeDV=>false), (:tf => 6));
     # configure!(n;(:Nck=>[20, 10, 10]),(:integrationScheme=>:lgrImplicit),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
     # configure!(n;(:Nck=>[20, 10, 10]),(:integrationScheme=>:lgrExplicit),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
-    configure!(n,N=60;(:integrationScheme=>:Midpoint),(:finalTimeDV=>false), (:tf => 6));
+    # configure!(n,N=60;(:integrationScheme=>:Midpoint),(:finalTimeDV=>false), (:tf => 6));
     # configure!(n,N=40;(:integrationScheme=>:mpcol),(:finalTimeDV=>true), (:solverSettings => (:name => :MadNLP)));
     #
     
@@ -56,4 +56,5 @@ using Test
     
     @objective(n.ocp.mdl, Min, obj+n.ocp.tf+(n.r.ocp.x[end,1]-goal[1])^2 + (n.r.ocp.x[end,2]-goal[2])^2)
     OCPoptimize!(n);
+    print(n.r.ocp.X)
 end
