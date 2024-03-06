@@ -188,8 +188,8 @@ function OCPdef!(n::NLOpt{T}) where { T <: Number }
           end
         elseif n.s.ocp.integrationScheme == :Midpoint  
             xmd = @variable(n.ocp.mdl,xmd[1:n.ocp.state.pts - 1,1:n.ocp.state.num])
-            dxmid = Array{Any}(undef,L,n.ocp.state.num - 1)
-            Lmd = size(xmd)[1]
+            dxmid = Array{Any}(undef,L,n.ocp.state.num)
+            L = size(xmd)[1]
             for st in 1:n.ocp.state.num
                 dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,Lmd,st)
             end
