@@ -335,9 +335,9 @@ function WarmStart(n::NLOpt)
   catch
     flag = false
   end
-  if flag == true && n.r.ocp.status == :Optimal
-    set_start_value.(n.r.ocp.x, n.r.ocp.X)
-    set_start_value.(n.r.ocp.u, n.r.ocp.U)
+  if flag == true
+    set_start_value.(n.r.ocp.x, [n.ocp.X0'; n.r.ocp.X[2:end, :]])
+    set_start_value.(n.r.ocp.u, [n.r.ocp.U[2:end, :]; n.r.ocp.U[end, :]'])
   end
 
 end
