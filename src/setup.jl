@@ -69,7 +69,6 @@ function defineSolver!(n, kw)
     if haskey(kw, :name)
         n.s.ocp.solver.name = kw[:name]
     else
-        @warn "No solver specified: using default solver (IPOPT)"
         n.s.ocp.solver.name = :Ipopt
     end
 
@@ -187,6 +186,18 @@ function OCPdef!(n::NLOpt{T}) where { T <: Number }
           for st in 1:n.ocp.state.num
             n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j+1,st] - n.r.ocp.x[j,st] == 0.5*(dx[j,st] + dx[j+1,st])*n.ocp.tf/(n.ocp.N) )
           end
+        elseif n.s.ocp.integrationScheme == :Midpoint  
+            xmd = @variable(n.ocp.mdl,xmd[1:n.ocp.state.pts - 1,1:n.ocp.state.num])
+            dxmid = Array{Any}(undef,L,n.ocp.state.num - 1)
+            Lmd = size(xmd)[1]
+            for st in 1:n.ocp.state.num
+                dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,Lmd,st)
+            end
+
+            for st in n.ocp.state.num
+                @constraint(n.ocp.mdl, [j in 1:n.ocp.N], xmd[j, st] - n.r.ocp.x[j, st] == dx[j, st] * n.ocp.tf/(n.ocp.N) / 2)
+                n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j + 1, st] - xmd[j, st] == dxmid[j, st] *  n.ocp.tf/(n.ocp.N))
+            end
         else
             error("Not implemented yet")
         end
@@ -283,7 +294,7 @@ function configure!(n::NLOpt{T}; kwargs... ) where { T <: Number }
         end
 
 
-    elseif in( n.s.ocp.integrationScheme,  [ :trapezoidal, :bkwEuler ] )
+    elseif in( n.s.ocp.integrationScheme,  [ :trapezoidal, :bkwEuler, :Midpoint ] )
 
         # Use Trapezoidal Method
         n.s.ocp.integrationMethod = :tm

@@ -184,7 +184,7 @@ function integrate!(n::NLOpt,V::Expr)
       # NOTE integration this way does not penalize the first control
       expression = @expression(n.ocp.mdl, sum(temp[j+1]*n.ocp.tf/n.ocp.N for j = 1:n.ocp.N) )
       #expression = @NLexpression(n.ocp.mdl, sum(temp[j]*n.ocp.tf/n.ocp.N for j = 1:n.ocp.N) )
-    elseif n.s.ocp.integrationScheme ==:trapezoidal || n.s.ocp.integrationScheme == :mpcol
+    elseif n.s.ocp.integrationScheme ==:trapezoidal || n.s.ocp.integrationScheme == :Midpoint
       expression = @expression(n.ocp.mdl, sum(0.5*(temp[j]+temp[j+1])*n.ocp.tf/n.ocp.N for j = 1:n.ocp.N) )
     else
       error("\n $(n.s.ocp.integrationScheme) not defined in integrationSchemes\n")
