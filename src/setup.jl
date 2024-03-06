@@ -189,12 +189,13 @@ function OCPdef!(n::NLOpt{T}) where { T <: Number }
         elseif n.s.ocp.integrationScheme == :Midpoint  
             xmd = @variable(n.ocp.mdl,xmd[1:n.ocp.state.pts,1:n.ocp.state.num])
             dxmid = Array{Any}(undef,L,n.ocp.N)
-            for st in 1:n.ocp.state.num
-                dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,L,st)
-            end
+            # for st in 1:n.ocp.state.num
+            #     dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,L,st)
+            # end
 
             for st in n.ocp.state.num
                 @constraint(n.ocp.mdl, [j in 1:n.ocp.N], xmd[j, st] - n.r.ocp.x[j, st] == dx[j, st] * n.ocp.tf/(n.ocp.N) / 2)
+                dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,L,st)
                 n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j + 1, st] - n.r.ocp.x[j, st] == dxmid[j, st] *  n.ocp.tf/(n.ocp.N))
             end
         else
