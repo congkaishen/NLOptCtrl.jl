@@ -187,11 +187,10 @@ function OCPdef!(n::NLOpt{T}) where { T <: Number }
             n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j+1,st] - n.r.ocp.x[j,st] == 0.5*(dx[j,st] + dx[j+1,st])*n.ocp.tf/(n.ocp.N) )
           end
         elseif n.s.ocp.integrationScheme == :Midpoint  
-            xmd = @variable(n.ocp.mdl,xmd[1:n.ocp.state.pts - 1,1:n.ocp.state.num])
-            dxmid = Array{Any}(undef,L,n.ocp.state.num)
-            L = size(xmd)[1]
+            xmd = @variable(n.ocp.mdl,xmd[1:n.ocp.state.pts,1:n.ocp.state.num])
+            dxmid = Array{Any}(undef,L,n.ocp.N)
             for st in 1:n.ocp.state.num
-                dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,Lmd,st)
+                dxmid[:,st] = DiffEq(n,xmd,n.r.ocp.u,L,st)
             end
 
             for st in n.ocp.state.num
