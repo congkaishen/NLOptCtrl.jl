@@ -195,7 +195,7 @@ function OCPdef!(n::NLOpt{T}) where { T <: Number }
 
             for st in n.ocp.state.num
                 @constraint(n.ocp.mdl, [j in 1:n.ocp.N], xmd[j, st] - n.r.ocp.x[j, st] == dx[j, st] * n.ocp.tf/(n.ocp.N) / 2)
-                n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j + 1, st] - xmd[j, st] == dxmid[j, st] *  n.ocp.tf/(n.ocp.N))
+                n.r.ocp.dynCon[:,st] = @constraint(n.ocp.mdl, [j in 1:n.ocp.N], n.r.ocp.x[j + 1, st] - n.r.ocp.x[j, st] == dxmid[j, st] *  n.ocp.tf/(n.ocp.N))
             end
         else
             error("Not implemented yet")
