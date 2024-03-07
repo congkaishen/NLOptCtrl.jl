@@ -1,4 +1,4 @@
-using .NLOptCtrl
+using NLOptCtrl
 using Test
 
 @testset "NLOptCtrl.jl" begin
@@ -20,7 +20,7 @@ using Test
     controls!(n,[:jx,:sr];descriptions=["jx(t)","sr(t)"]);
     dx=ThreeDOFBicycle_expr(n);
     dynamics!(n,dx);
-    configure!(n,N=60;(:integrationScheme=>:Midpoint),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
+    configure!(n,N=60;(:integrationScheme=>:bkwEuler),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
     # configure!(n,N=60;(:integrationScheme=>:bkwEuler),(:finalTimeDV=>false), (:tf => 6));
     # configure!(n;(:Nck=>[20, 10, 10]),(:integrationScheme=>:lgrImplicit),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
     # configure!(n;(:Nck=>[20, 10, 10]),(:integrationScheme=>:lgrExplicit),(:finalTimeDV=>true),(:solverSettings => (:name => :Ipopt)));
